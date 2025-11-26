@@ -13,8 +13,8 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo 'Pulling code from GitHub...'
-                // Your GitHub URL
-                git branch: 'main', url: '[https://github.com/ayhm23/calculator-cli.git](https://github.com/ayhm23/calculator-cli.git)'
+                // Your GitHub URL - Fixed: removed markdown brackets
+                git branch: 'main', url: 'https://github.com/ayhm23/calculator-cli.git'
             }
         }
 
