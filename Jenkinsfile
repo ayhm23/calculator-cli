@@ -14,7 +14,7 @@ pipeline {
             steps {
                 echo 'Pulling code from GitHub...'
                 // Your GitHub URL
-                git branch: 'main', url: 'https://github.com/ayhm23/calculator-cli.git'
+                git branch: 'main', url: '[https://github.com/ayhm23/calculator-cli.git](https://github.com/ayhm23/calculator-cli.git)'
             }
         }
 
@@ -57,13 +57,3 @@ pipeline {
         }
     }
 }
-```
-
-### Next Steps:
-1.  Copy the content of **Dockerfile** above and replace your existing file.
-2.  Copy the content of **Jenkinsfile** above and replace your existing file.
-3.  Run the following commands to update GitHub:
-    ```powershell
-    git add Dockerfile Jenkinsfile
-    git commit -m "Update Dockerfile and Jenkinsfile for Java"
-    git push origin main
