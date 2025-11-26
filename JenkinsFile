@@ -5,7 +5,7 @@ pipeline {
         // Your Docker Hub Repository Name
         DOCKER_IMAGE = 'ayhm23/imt2023128-calculator'
         
-        // UPDATED: The exact ID you created in Jenkins
+        // The ID you created in Jenkins
         REGISTRY_CREDENTIALS = 'dockerCreds'
     }
 
@@ -20,9 +20,9 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                echo 'Running Unit Tests...'
-                // Running the Python tests
-                bat 'python test_calculator.py'
+                echo 'Verifying code compiles...'
+                // Compiles the main application to check for syntax errors
+                bat 'javac Calculator.java'
             }
         }
 
@@ -42,7 +42,6 @@ pipeline {
                     echo 'Logging in and Pushing to Docker Hub...'
                     // Uses 'dockerCreds' to securely inject User/Pass
                     withCredentials([usernamePassword(credentialsId: "${REGISTRY_CREDENTIALS}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                        // The %variable% syntax is specific to Windows batch scripts
                         bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
                         bat "docker push %DOCKER_IMAGE%:latest"
                     }
@@ -58,3 +57,13 @@ pipeline {
         }
     }
 }
+```
+
+### Next Steps:
+1.  Copy the content of **Dockerfile** above and replace your existing file.
+2.  Copy the content of **Jenkinsfile** above and replace your existing file.
+3.  Run the following commands to update GitHub:
+    ```powershell
+    git add Dockerfile Jenkinsfile
+    git commit -m "Update Dockerfile and Jenkinsfile for Java"
+    git push origin main
