@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        // Your Docker Hub Repository Name
+        DOCKER_IMAGE = 'ayhm23/imt2023128-calculator'
+        
+        // UPDATED: The exact ID you created in Jenkins
+        REGISTRY_CREDENTIALS = 'dockerCreds'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Pulling code from GitHub...'
+                // Your GitHub URL
+                git branch: 'main', url: 'https://github.com/ayhm23/calculator-cli.git'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                echo 'Running Unit Tests...'
+                // Running the Python tests
+                bat 'python test_calculator.py'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker Image...'
+                    // Builds the image tagging it with "latest"
+                    bat "docker build -t %DOCKER_IMAGE%:latest ."
+                }
+            }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    echo 'Logging in and Pushing to Docker Hub...'
+                    // Uses 'dockerCreds' to securely inject User/Pass
+                    withCredentials([usernamePassword(credentialsId: "${REGISTRY_CREDENTIALS}", passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
+                        // The %variable% syntax is specific to Windows batch scripts
+                        bat "docker login -u %DOCKER_USER% -p %DOCKER_PASS%"
+                        bat "docker push %DOCKER_IMAGE%:latest"
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            bat "docker logout"
+        }
+    }
+}
